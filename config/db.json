@@ -1,0 +1,11 @@
+{
+    "dev": {
+        "host": "127.0.0.1",
+        "user": "root",
+        "password": "",
+        "database": "book-list",
+        "driver": "mysql",
+        "multipleStatements": true
+    },
+    "sql-file": true
+}
