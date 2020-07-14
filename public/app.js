@@ -10,9 +10,13 @@ class Book {
 //UI Class: Handles UI Task
 class UI {
   static displayBooks() {
-    const books = Store.getBooks();
-
-    books.forEach((book) => UI.addBookToList(book));
+    Store.getBooks()
+      .then((res) => {
+        res.data.forEach((book) => UI.addBookToList(book));
+      })
+      .then((error) => {
+        console.log(error);
+      });
   }
 
   static addBookToList(book) {
@@ -54,13 +58,12 @@ class UI {
 //Store Class: Handles Storage
 class Store {
   static getBooks() {
-    let books;
-    if (localStorage.getItem("books") === null) {
-      books = [];
-    } else {
-      books = JSON.parse(localStorage.getItem("books"));
-    }
-    return books;
+    return new Promise((resolve, reject) => {
+      fetch("/api/v1/items", { method: "GET" })
+        .then((res) => res.json())
+        .then((res) => resolve(res))
+        .catch((error) => reject(error));
+    });
   }
 
   static addBook(book) {

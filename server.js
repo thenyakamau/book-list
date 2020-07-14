@@ -4,6 +4,7 @@ const path = require("path");
 const morgan = require("morgan");
 const colors = require("colors");
 const database = require("./config/database");
+const apiRoute = require("./routes/api");
 
 dotenv.config({ path: ".env" });
 
@@ -14,6 +15,8 @@ app.use(express.json());
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
+
+app.use("/api/v1/items", apiRoute);
 
 app.use(express.static(__dirname + "/public"));
 
