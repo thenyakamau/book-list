@@ -3,9 +3,11 @@
 
 <head>
     <meta charset="UTF-8" />
+    <link rel="icon" href='study.png' type="image/png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" type="text/css" href="./bootstrap.min.css" />
     <link rel="stylesheet" href="./all.css" type="text/css" />
+    <link rel="stylesheet" href="style.css">
     <title>Book List</title>
 </head>
 
@@ -41,11 +43,19 @@
             <th>Title</th>
             <th>Author</th>
             <th>ISBN#</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody id="book-list"></tbody>
       </table>
     </div>
+    <div id="simpleModal" class="_modal">
+      <div class="modal_content">
+        <span id="closeBtn" class="close_btn">&times;</span>
+            <p>Hello am a modal</p>
+    </div>
+    </div>
     <script src="./app.js"></script>
-  </body>
+</body>
+
 </html>

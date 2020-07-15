@@ -15,7 +15,7 @@ class UI {
         res.data.forEach((book) => UI.addBookToList(book));
       })
       .then((error) => {
-        console.log(error);
+        this.showAlert("Something went wrong", "danger");
       });
   }
 
@@ -26,14 +26,48 @@ class UI {
     row.innerHTML = `<td>${book.title}</td>
      <td>${book.author}</td> 
     <td>${book.isbn}</td>
-     <td><a href="#" class = "btn btn-danger btn-sm delete">x</a></td>`;
+     <td><a href="#" class = "btn btn-success btn-sm m-1 edit" ><i class="fas fa-pen edit"></i></a> <a href="#" class = "btn btn-danger btn-sm m-1 delete"><i class="fas fa-times"></i></a></td>`;
 
     list.appendChild(row);
   }
 
+  static editBook(el) {
+    if (el.classList.contains("edit")) {
+      const isbn = el.parentElement.previousElementSibling.textContent;
+      Store.getBook(isbn)
+        .then((res) => this.openModal(res.data[0]))
+        .catch((error) => this.showAlert("Something went wrong", "danger"));
+    }
+  }
+
   static deleteBook(el) {
     if (el.classList.contains("delete")) {
-      el.parentElement.parentElement.remove();
+      const isbn = el.parentElement.previousElementSibling.textContent;
+      Store.removeBook(isbn)
+        .then((res) => {
+          el.parentElement.parentElement.remove();
+          this.showAlert(res.message, "success");
+        })
+        .catch((error) => this.showAlert("Something went wrong", "danger"));
+    }
+  }
+
+  static openModal(book) {
+    console.log(book);
+    //Get Modal Element
+    const modal = document.getElementById("simpleModal");
+    modal.style.display = "block";
+  }
+
+  static closeModal() {
+    const modal = document.getElementById("simpleModal");
+    modal.style.display = "none";
+  }
+
+  static outsideClick(e) {
+    const modal = document.getElementById("simpleModal");
+    if (e.target === modal) {
+      modal.style.display = "none";
     }
   }
 
@@ -66,20 +100,54 @@ class Store {
     });
   }
 
+  static getBook(isbn) {
+    return new Promise((resolve, reject) => {
+      fetch(`/api/v1/items/${isbn}`, { method: "GET" })
+        .then((res) => res.json())
+        .then((res) => resolve(res))
+        .catch((error) => reject(error));
+    });
+  }
+
   static addBook(book) {
-    const books = Store.getBooks();
-    books.push(book);
-    localStorage.setItem("books", JSON.stringify(books));
+    return new Promise((resolve, reject) => {
+      fetch("/api/v1/items", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(book),
+      })
+        .then((res) => res.json())
+        .then((res) => resolve(res))
+        .catch((error) => reject(error));
+    });
+  }
+
+  static updateBook(book) {
+    return new Promise((resolve, reject) => {
+      fetch("/api/v1/items/update", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(book),
+      })
+        .then((res) => res.json())
+        .then((res) => resolve(res))
+        .catch((error) => reject(error));
+    });
   }
 
   static removeBook(isbn) {
-    const books = Store.getBooks();
-    books.forEach((book, index) => {
-      if (book.isbn === isbn) {
-        books.splice(index, 1);
-      }
+    return new Promise((resolve, reject) => {
+      fetch(`/api/v1/items/${isbn}`, { method: "DELETE" })
+        .then((res) => res.json())
+        .then((res) => resolve(res))
+        .catch((error) => reject(error));
     });
-    localStorage.setItem("books", JSON.stringify(books));
   }
 }
 
@@ -108,10 +176,9 @@ document.querySelector("#book-form").addEventListener("submit", (e) => {
   UI.addBookToList(book);
 
   //Save Book
-  Store.addBook(book);
-
-  //Show Success Message
-  UI.showAlert("Book Added", "success");
+  Store.addBook(book)
+    .then((res) => UI.showAlert(res.message, "success"))
+    .catch((error) => UI.showAlert("Something went wrong", "danger"));
 
   //Clear Fields
   UI.clearFields();
@@ -122,8 +189,13 @@ document.querySelector("#book-list").addEventListener("click", (e) => {
   //Remove Book from UI
   UI.deleteBook(e.target);
 
-  Store.removeBook(e.target.parentElement.previousElementSibling.textContent);
+  UI.editBook(e.target);
+});
 
-  //Show Remove Message
-  UI.showAlert("Book Removed", "success");
+document.getElementById("closeBtn").addEventListener("click", (e) => {
+  UI.closeModal();
+});
+
+window.addEventListener("click", (e) => {
+  UI.outsideClick(e);
 });

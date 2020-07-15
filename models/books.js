@@ -7,19 +7,30 @@ function getDbBooks(callback) {
 
 exports.getDbBooks = getDbBooks;
 
+function getDbBook(isbn ,callback) {
+  let sql = `SELECT * FROM books WHERE isbn = ${isbn}`;
+  return database.query(sql, callback);
+}
+
+exports.getDbBook = getDbBook;
+
 function saveDbBook(book, callback) {
-  let sql = "INSERT INTO books ?";
+  let sql = "INSERT INTO books set ?";
   database.query(sql, book,  callback);
 }
 
 exports.saveDbBook = saveDbBook;
 
-function deleteDbBook(id) {
-  let sql = `DELETE FROM books WHERE ID = ${id}`;
-  database.query(sql, (error, result) => {
-    if (error) return error;
-    else return result;
-  });
+function updateDbBook(book, callback) {
+  let sql = 'UPDATE books set title = ?, author = ?, isbn = ? WHERE id = ?';
+  database.query(sql,[book.title, book.author, book.isbn, book.id], callback);
+}
+
+exports.updateDbBook = updateDbBook;
+
+function deleteDbBook(isbn, callback) {
+  let sql = `DELETE FROM books WHERE isbn = ${isbn}`;
+  database.query(sql, callback);
 }
 
 exports.deleteDbBook = deleteDbBook;
