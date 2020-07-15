@@ -22,8 +22,8 @@ function saveDbBook(book, callback) {
 exports.saveDbBook = saveDbBook;
 
 function updateDbBook(book, callback) {
-  let sql = 'UPDATE books set title = ?, author = ?, isbn = ? WHERE id = ?';
-  database.query(sql,[book.title, book.author, book.isbn, book.id], callback);
+  let sql = 'UPDATE books set title = ?, author = ? WHERE isbn = ?';
+  database.query(sql,[book.title, book.author, book.isbn], callback);
 }
 
 exports.updateDbBook = updateDbBook;

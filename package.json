@@ -6,7 +6,8 @@
     "scripts": {
         "start": "node server",
         "server": "nodemon server",
-        "migration": "node migrations/create"
+        "migration": "node migrations/create",
+        "drop": "node migrations/drop"
     },
     "repository": {
         "type": "git",

@@ -31,13 +31,25 @@ class UI {
     list.appendChild(row);
   }
 
-  static editBook(el) {
+  static displayBook(el) {
     if (el.classList.contains("edit")) {
       const isbn = el.parentElement.previousElementSibling.textContent;
       Store.getBook(isbn)
         .then((res) => this.openModal(res.data[0]))
         .catch((error) => this.showAlert("Something went wrong", "danger"));
     }
+  }
+
+  static editBook(book) {
+    Store.updateBook(book)
+      .then((res) => {
+        this.showAlert(res.message, "success");
+        this.closeModal();
+        window.location.reload();
+      })
+      .catch((error) => this.showAlert("Something went wrong", "danger"));
+
+    
   }
 
   static deleteBook(el) {
@@ -53,9 +65,12 @@ class UI {
   }
 
   static openModal(book) {
-    console.log(book);
     //Get Modal Element
     const modal = document.getElementById("simpleModal");
+    document.getElementById("modal-title").value = book.title;
+    document.getElementById("modal-author").value = book.author;
+    document.getElementById("modal-isbn").value = book.isbn;
+
     modal.style.display = "block";
   }
 
@@ -189,7 +204,17 @@ document.querySelector("#book-list").addEventListener("click", (e) => {
   //Remove Book from UI
   UI.deleteBook(e.target);
 
-  UI.editBook(e.target);
+  UI.displayBook(e.target);
+});
+
+document.querySelector("#modal-form").addEventListener("submit", (e) => {
+  const title = document.getElementById("modal-title").value;
+  const author = document.getElementById("modal-author").value;
+  const isbn = document.getElementById("modal-isbn").value;
+
+  let book = new Book(title, author, isbn);
+
+  UI.editBook(book);
 });
 
 document.getElementById("closeBtn").addEventListener("click", (e) => {

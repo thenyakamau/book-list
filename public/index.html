@@ -3,11 +3,11 @@
 
 <head>
     <meta charset="UTF-8" />
-    <link rel="icon" href='study.png' type="image/png">
+    <link rel="icon" href="study.png" type="image/png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" type="text/css" href="./bootstrap.min.css" />
     <link rel="stylesheet" href="./all.css" type="text/css" />
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
     <title>Book List</title>
 </head>
 
@@ -52,7 +52,28 @@
     <div id="simpleModal" class="_modal">
       <div class="modal_content">
         <span id="closeBtn" class="close_btn">&times;</span>
-            <p>Hello am a modal</p>
+            <div class="modal-header">
+                <center>
+                    <p>Edit Book</p>
+                </center>
+            </div>
+            <div class="modal-body">
+                <form id="modal-form">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" id="modal-title" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="author">Author</label>
+                        <input type="text" id="modal-author" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="isbn">ISBN#</label>
+                        <input type="text" id="modal-isbn" class="form-control" disabled/>
+                    </div>
+                    <input type="submit" value="Edit Book" class="btn btn-primary btn-block" id="" />
+                </form>
+            </div>
     </div>
     </div>
     <script src="./app.js"></script>
